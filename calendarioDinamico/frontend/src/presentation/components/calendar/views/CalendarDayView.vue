@@ -1,10 +1,7 @@
 <script setup lang="ts">
 
 import { computed } from "vue"
-import { useCalendarStore } from "../../../../stores/calendarStore"
 import { useRoute } from "vue-router"
-
-const calendarStore = useCalendarStore()
 
 const route = useRoute()
 

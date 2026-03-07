@@ -9,8 +9,14 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-    path: "/",
-    redirect: "/month"
+      path: "/",
+      redirect: () => {
+
+        const today = new Date()
+
+        return `/month/${today.getFullYear()}/${today.getMonth() + 1}`
+
+      }
     },
     {
       path: "/day/:date",
@@ -18,17 +24,17 @@ const router = createRouter({
       component: DayView
     },
     {
-      path: "/week",
+      path: "/week/:date",
       name: "week",
       component: WeekView
     },
     {
-      path: "/month",
+      path: "/month/:year/:month",
       name: "month",
       component: MonthView
     },
     {
-      path: "/year",
+      path: "/year/:year",
       name: "year",
       component: YearView
     }

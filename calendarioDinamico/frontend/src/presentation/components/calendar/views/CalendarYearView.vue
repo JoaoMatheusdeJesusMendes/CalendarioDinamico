@@ -1,13 +1,15 @@
 <script setup lang="ts">
 
 import { computed } from "vue"
+import { useRouter, useRoute } from "vue-router"
 import { useCalendarStore } from "../../../../stores/calendarStore"
 
+const router = useRouter()
+const route = useRoute()
 const calendarStore = useCalendarStore()
+const year = computed(() => Number(route.params.year))
 
 const months = computed(() => {
-
-  const year = calendarStore.currentDate.getFullYear()
 
   const monthNames = [
     "Jan","Fev","Mar","Abr","Mai","Jun",
@@ -18,13 +20,25 @@ const months = computed(() => {
 
     return {
       name,
-      date: new Date(year, index, 1),
-      points: 0 // futuramente virá das tarefas
+      date: new Date(year.value, index, 1),
+      points: 0
     }
 
   })
 
 })
+
+function openMonth(monthIndex: number) {
+
+  router.push({
+    name: "month",
+    params: {
+      year: year.value,
+      month: monthIndex + 1
+    }
+  })
+
+}
 
 </script>
 
@@ -33,9 +47,10 @@ const months = computed(() => {
 <div class="year-view">
 
   <div
-    v-for="month in months"
+    v-for="(month, index) in months"
     :key="month.date.toISOString()"
     class="month-card"
+    @click="openMonth(index)"
   >
 
     <div class="month-name">
@@ -76,6 +91,17 @@ font-weight:bold;
 .points{
 margin-top:10px;
 color:goldenrod;
+}
+
+.month{
+border:1px solid #ccc;
+padding:20px;
+cursor:pointer;
+border-radius:6px;
+}
+
+.month:hover{
+background:#f5f5f5;
 }
 
 </style>

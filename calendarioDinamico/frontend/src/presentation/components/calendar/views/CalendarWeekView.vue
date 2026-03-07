@@ -1,8 +1,10 @@
 <script setup lang="ts">
 
 import { computed } from "vue"
-import { useCalendarStore } from "../../../../stores/calendarStore"
+import { useRoute } from "vue-router"
+import { useCalendarStore } from "@/stores/calendarStore"
 
+const route = useRoute()
 const calendarStore = useCalendarStore()
 
 function getStartOfWeek(date: Date) {
@@ -10,7 +12,6 @@ function getStartOfWeek(date: Date) {
   const start = new Date(date)
   const day = start.getDay()
 
-  // semana começando segunda
   const diff = day === 0 ? -6 : 1 - day
 
   start.setDate(start.getDate() + diff)
@@ -18,9 +19,18 @@ function getStartOfWeek(date: Date) {
   return start
 }
 
+const currentDate = computed(() => {
+
+  const dateParam = route.params.date as string
+  const [y,m,d] = dateParam.split("-").map(Number)
+
+  return new Date(y, m - 1, d)
+
+})
+
 const weekDays = computed(() => {
 
-  const start = getStartOfWeek(calendarStore.currentDate)
+  const start = getStartOfWeek(currentDate.value)
 
   const days = []
 
@@ -37,6 +47,7 @@ const weekDays = computed(() => {
   }
 
   return days
+
 })
 
 </script>

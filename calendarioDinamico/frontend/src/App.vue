@@ -10,7 +10,7 @@ import CalendarViewSwitcher from "@/presentation/components/calendar/CalendarVie
 
   <CalendarViewSwitcher />
 
-  <router-view />
+  <RouterView :key="$route.fullPath" />
 
 </div>
 

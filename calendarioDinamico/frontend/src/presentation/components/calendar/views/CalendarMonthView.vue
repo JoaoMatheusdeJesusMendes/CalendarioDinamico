@@ -3,22 +3,25 @@
 import { computed } from "vue"
 import { useCalendarStore } from "../../../../stores/calendarStore"
 import { useRouter } from "vue-router"
+import { useRoute } from "vue-router"
 
 const calendarStore = useCalendarStore()
 const router = useRouter()
+const route = useRoute()
+const year = computed(() => Number(route.params.year))
+const month = computed(() => Number(route.params.month) - 1)
 
 const days = computed(() => {
 
-  const date = calendarStore.currentDate
-  const year = date.getFullYear()
-  const month = date.getMonth()
+  const y = year.value
+  const m = month.value
 
-  const lastDay = new Date(year, month + 1, 0).getDate()
+  const lastDay = new Date(y, m + 1, 0).getDate()
 
   return Array.from({ length: lastDay }, (_, i) => {
 
     return {
-      date: new Date(year, month, i + 1),
+      date: new Date(y, m, i + 1),
       points: 0
     }
 
