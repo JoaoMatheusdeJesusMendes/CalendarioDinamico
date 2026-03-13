@@ -9,11 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "express": "^5.2.1",
+    "mongoose": "^9.3.0",
     "pinia": "^3.0.4",
     "vue": "^3.5.25",
     "vue-router": "^5.0.3"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/node": "^24.10.1",
     "@vitejs/plugin-vue": "^6.0.2",
     "@vue/tsconfig": "^0.8.1",

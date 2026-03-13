@@ -1,8 +1,12 @@
 export interface Task {
-  id: string
-  title: string
+
+  _id: string
+  date: string
+  startTime: string
+  endTime: string
+  location?: string
   description?: string
-  date: Date
-  completed: boolean
   points: number
+  status: "todo" | "doing" | "done"
+
 }

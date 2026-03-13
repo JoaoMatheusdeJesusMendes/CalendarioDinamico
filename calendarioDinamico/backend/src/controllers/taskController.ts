@@ -1,20 +1,46 @@
 import { Request, Response } from "express"
 import Task from "../models/Task"
 
-export const createTask = async (req: Request, res: Response) => {
+export const createTask = async (req: any, res: Response) => {
+
   try {
-    const task = await Task.create(req.body)
-    res.status(201).json(task)
+
+    const task = await Task.create({
+
+      ...req.body,
+
+      userId: req.user.userId
+
+    })
+
+    res.json(task)
+
   } catch (error) {
-    res.status(500).json({ error: "Erro ao criar tarefa" })
+
+    console.error(error)
+
+    res.status(500).json({
+      message:"Erro ao criar tarefa"
+    })
+
   }
+
 }
 
-export const getTasks = async (req: Request, res: Response) => {
-  try {
-    const tasks = await Task.find()
+export const getTasks = async (req: any, res: Response) => {
+
+  try{
+
+    const tasks = await Task.find({
+      userId: req.user.id
+    })
+
     res.json(tasks)
-  } catch (error) {
-    res.status(500).json({ error: "Erro ao buscar tarefas" })
+
+  }catch{
+
+    res.status(500).json({message:"Erro ao buscar tarefas"})
+
   }
+
 }

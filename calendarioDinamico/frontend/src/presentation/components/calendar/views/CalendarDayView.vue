@@ -1,9 +1,14 @@
 <script setup lang="ts">
 
-import { computed } from "vue"
-import { useRoute } from "vue-router"
+import { computed, ref, onMounted } from "vue"
+import { useRoute, useRouter } from "vue-router"
+import { getTasks } from "@/domain/services/taskService"
+import type { Task } from "@/domain/models/Task"
 
 const route = useRoute()
+const router = useRouter()
+
+const tasks = ref<Task[]>([])
 
 const selectedDate = computed(() => {
 
@@ -23,15 +28,74 @@ const formattedDate = computed(() => {
   })
 })
 
-// futuramente virá de um taskStore
-const tasks = [
-  { id: 1, title: "Estudar Vue", points: 10 },
-  { id: 2, title: "Trabalhar no TCC", points: 20 }
-]
+const dateString = computed(() => {
+  return route.params.date as string
+})
+
+/*
+async function loadTasks(){
+
+  const data = await getTasks()
+
+  if(Array.isArray(data)){
+
+    tasks.value = data
+      .filter((task:any)=>task.date === dateString.value)
+      .sort((a:any,b:any)=> a.startTime.localeCompare(b.startTime))
+
+  }else{
+
+    console.error("Erro ao carregar tarefas:", data)
+    tasks.value = []
+
+  }
+
+}
+*/
+
+onMounted(async () => {
+
+  const data = await getTasks()
+
+  console.log("Tasks recebidas:", data)
+  console.log("Data da rota:", dateString.value)
+
+  if (Array.isArray(data)) {
+
+    tasks.value = data.filter(
+      (task:any) => task.date === dateString.value
+    )
+
+  } else {
+
+    console.error("Erro ao carregar tarefas:", data)
+    tasks.value = []
+
+  }
+
+})
+
+const completedTasks = computed(() => {
+  return tasks.value.filter((task:any)=>task.status === "done")
+})
 
 const totalPoints = computed(() => {
-  return tasks.reduce((sum, task) => sum + task.points, 0)
+  return completedTasks.value.reduce(
+    (sum:number, task:any)=> sum + task.points,
+    0
+  )
 })
+
+function createTask(){
+
+  router.push({
+    name:"createTask",
+    query:{
+      date:dateString.value
+    }
+  })
+
+}
 
 </script>
 
@@ -47,16 +111,20 @@ const totalPoints = computed(() => {
     ⭐ Pontos do dia: {{ totalPoints }}
   </div>
 
+  <button class="create" @click="createTask">
+    + Criar tarefa
+  </button>
+
   <div class="tasks">
 
     <div
       v-for="task in tasks"
-      :key="task.id"
+      :key="task._id"
       class="task"
     >
 
       <span class="task-title">
-        {{ task.title }}
+        {{ task.description }}
       </span>
 
       <span class="task-points">
@@ -70,45 +138,3 @@ const totalPoints = computed(() => {
 </div>
 
 </template>
-
-<style scoped>
-
-.day-view{
-padding:20px;
-display:flex;
-flex-direction:column;
-gap:20px;
-}
-
-.date{
-font-size:24px;
-font-weight:bold;
-}
-
-.points{
-font-size:18px;
-}
-
-.tasks{
-display:flex;
-flex-direction:column;
-gap:10px;
-}
-
-.task{
-display:flex;
-justify-content:space-between;
-border:1px solid #ccc;
-padding:10px;
-border-radius:6px;
-}
-
-.task-title{
-font-weight:500;
-}
-
-.task-points{
-color:goldenrod;
-}
-
-</style>
