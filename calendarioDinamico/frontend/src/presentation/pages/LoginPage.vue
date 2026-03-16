@@ -5,25 +5,32 @@ import { useRouter } from "vue-router"
 import { login } from "@/domain/services/authService"
 
 const router = useRouter()
-
+const errorMessage = ref("")
 const email = ref("")
 const password = ref("")
 
 async function submit(){
 
-  const response = await login({
-    email: email.value,
-    password: password.value
-  })
+  try{
 
-  localStorage.setItem("token", response.token)
+    const response = await login({
+      email: email.value,
+      password: password.value
+    })
 
-  const today = new Date()
+    localStorage.setItem("token", response.token)
 
-  router.push(`/month/${today.getFullYear()}/${today.getMonth()+1}`)
+    const today = new Date()
+
+    router.push(`/month/${today.getFullYear()}/${today.getMonth()+1}`)
+
+  }catch(error){
+
+    alert("Email ou senha inválidos")
+
+  }
 
 }
-
 </script>
 
 <template>

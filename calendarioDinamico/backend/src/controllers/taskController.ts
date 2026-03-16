@@ -27,19 +27,27 @@ export const createTask = async (req: any, res: Response) => {
 
 }
 
-export const getTasks = async (req: any, res: Response) => {
+export const getTasks = async (req: Request, res: Response) => {
 
-  try{
+  try {
+
+    if (!req.user) {
+      return res.status(401).json({ message: "Usuário não autenticado" })
+    }
 
     const tasks = await Task.find({
-      userId: req.user.id
+      userId: req.user.userId
     })
 
     res.json(tasks)
 
-  }catch{
+  } catch (error) {
 
-    res.status(500).json({message:"Erro ao buscar tarefas"})
+    console.error(error)
+
+    res.status(500).json({
+      message: "Erro ao buscar tarefas"
+    })
 
   }
 

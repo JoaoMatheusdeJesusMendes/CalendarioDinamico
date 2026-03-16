@@ -32,7 +32,9 @@ export async function login(credentials:any){
 
   console.log("LOGIN RESPONSE:", data)
 
-  localStorage.setItem("token", data.token)
+  if(!res.ok){
+    throw new Error(data.message || "Erro no login")
+  }
 
   return data
 }

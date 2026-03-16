@@ -21,10 +21,8 @@ async function submit(){
     age: age.value
   })
 
-  // salva token
   localStorage.setItem("token", response.token)
 
-  // redireciona para calendário
   router.push("/calendar")
 
 }
