@@ -23,7 +23,9 @@ async function submit(){
 
   localStorage.setItem("token", response.token)
 
-  router.push("/calendar")
+  const today = new Date()
+
+  router.push(`/month/${today.getFullYear()}/${today.getMonth()+1}`)
 
 }
 

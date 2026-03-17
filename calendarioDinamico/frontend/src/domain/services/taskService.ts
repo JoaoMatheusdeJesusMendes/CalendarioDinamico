@@ -28,3 +28,19 @@ export async function createTask(task:any){
 
   return await res.json()
 }
+
+export async function updateTask(id: string, data: any) {
+
+  const token = localStorage.getItem("token")
+
+  const res = await fetch(`http://localhost:3000/tasks/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(data)
+  })
+
+  return res.json()
+}

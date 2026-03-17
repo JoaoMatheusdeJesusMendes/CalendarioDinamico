@@ -52,3 +52,23 @@ export const getTasks = async (req: Request, res: Response) => {
   }
 
 }
+
+export const updateTask = async (req: Request, res: Response) => {
+
+  try {
+
+    const { id } = req.params
+
+    const updated = await Task.findByIdAndUpdate(
+      id,
+      req.body,
+      { new: true }
+    )
+
+    res.json(updated)
+
+  } catch (error) {
+    res.status(500).json({ message: "Erro ao atualizar tarefa" })
+  }
+
+}

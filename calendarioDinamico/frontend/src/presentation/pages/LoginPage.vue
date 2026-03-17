@@ -5,7 +5,6 @@ import { useRouter } from "vue-router"
 import { login } from "@/domain/services/authService"
 
 const router = useRouter()
-const errorMessage = ref("")
 const email = ref("")
 const password = ref("")
 

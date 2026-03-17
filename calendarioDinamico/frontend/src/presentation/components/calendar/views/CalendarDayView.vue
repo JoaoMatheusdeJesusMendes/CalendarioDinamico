@@ -32,27 +32,6 @@ const dateString = computed(() => {
   return route.params.date as string
 })
 
-/*
-async function loadTasks(){
-
-  const data = await getTasks()
-
-  if(Array.isArray(data)){
-
-    tasks.value = data
-      .filter((task:any)=>task.date === dateString.value)
-      .sort((a:any,b:any)=> a.startTime.localeCompare(b.startTime))
-
-  }else{
-
-    console.error("Erro ao carregar tarefas:", data)
-    tasks.value = []
-
-  }
-
-}
-*/
-
 onMounted(async () => {
 
   const data = await getTasks()

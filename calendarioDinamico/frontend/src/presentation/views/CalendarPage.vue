@@ -6,8 +6,6 @@ import Calendar from "../components/calendar/Calendar.vue"
 
 <div>
 
-  <h1>Calendário</h1>
-
   <Calendar/>
 
 </div>
