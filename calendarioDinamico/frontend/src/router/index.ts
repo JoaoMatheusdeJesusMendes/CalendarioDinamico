@@ -9,6 +9,7 @@ import LandingPage from "@/presentation/pages/LandingPage.vue"
 import LoginPage from "@/presentation/pages/LoginPage.vue"
 import RegisterPage from "@/presentation/pages/RegisterPage.vue"
 import CreateTaskPage from "@/presentation/pages/CreateTaskPage.vue"
+import EditTaskPage from "@/presentation/pages/EditTaskPage.vue"
 
 import { isAuthenticated } from "@/auth/auth"
 
@@ -59,6 +60,11 @@ const router = createRouter({
       name: "year",
       component: YearView,
       meta: { requiresAuth: true }
+    },
+    {
+      path: "/edit-task/:id",
+      name: "editTask",
+      component: EditTaskPage
     }
   ]
 })

@@ -1,46 +1,67 @@
 const API = "http://localhost:3000"
 
-export async function getTasks(){
+async function handleResponse(res: Response) {
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(text || "Erro na requisição")
+  }
+  return res.json()
+}
+
+export async function getTasks() {
 
   const token = localStorage.getItem("token")
 
-  const res = await fetch(`${API}/tasks`,{
-    headers:{
-      "Authorization": `Bearer ${token}`
+  const res = await fetch(`${API}/tasks`, {
+    headers: {
+      Authorization: `Bearer ${token}`
     }
   })
 
-  return await res.json()
+  return handleResponse(res)
 }
 
-export async function createTask(task:any){
+export async function createTask(task: any) {
 
   const token = localStorage.getItem("token")
 
-  const res = await fetch(`${API}/tasks`,{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "Authorization": `Bearer ${token}`
+  const res = await fetch(`${API}/tasks`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
     },
-    body:JSON.stringify(task)
+    body: JSON.stringify(task)
   })
 
-  return await res.json()
+  return handleResponse(res)
 }
 
 export async function updateTask(id: string, data: any) {
 
   const token = localStorage.getItem("token")
 
-  const res = await fetch(`http://localhost:3000/tasks/${id}`, {
+  const res = await fetch(`${API}/tasks/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+      Authorization: `Bearer ${token}`
     },
     body: JSON.stringify(data)
   })
 
-  return res.json()
+  return handleResponse(res)
+}
+
+export async function getTaskById(id: string) {
+
+  const token = localStorage.getItem("token")
+
+  const res = await fetch(`${API}/tasks/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  return handleResponse(res)
 }

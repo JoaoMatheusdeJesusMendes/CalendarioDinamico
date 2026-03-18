@@ -4,11 +4,15 @@ import { computed, ref, onMounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { getTasks } from "@/domain/services/taskService"
 import type { Task } from "@/domain/models/Task"
+import TaskItem from "@/presentation/pages/TaskItem.vue"
+import TaskDetailModal from "@/presentation/pages/TaskDetailModal.vue"
 
 const route = useRoute()
 const router = useRouter()
 
 const tasks = ref<Task[]>([])
+
+const selectedTask = ref<Task | null>(null)
 
 const selectedDate = computed(() => {
 
@@ -76,6 +80,10 @@ function createTask(){
 
 }
 
+function goToEdit(task: Task) {
+  router.push(`/edit-task/${task._id}`)
+}
+
 </script>
 
 <template>
@@ -96,21 +104,19 @@ function createTask(){
 
   <div class="tasks">
 
-    <div
+    <TaskItem 
       v-for="task in tasks"
       :key="task._id"
-      class="task"
-    >
+      :task="task"
+      @open="selectedTask = $event"
+    />
 
-      <span class="task-title">
-        {{ task.description }}
-      </span>
-
-      <span class="task-points">
-        +{{ task.points }} XP
-      </span>
-
-    </div>
+    <TaskDetailModal
+      v-if="selectedTask"
+      :task="selectedTask"
+      @close="selectedTask = null"
+      @edit="goToEdit"
+    />
 
   </div>
 
