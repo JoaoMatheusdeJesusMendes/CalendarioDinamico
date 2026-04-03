@@ -1,8 +1,10 @@
 <script setup lang="ts">
 
-import { computed } from "vue"
+import { ref, computed, onMounted } from "vue"
 import { useRoute } from "vue-router"
 import { useCalendarStore } from "@/stores/calendarStore"
+import CalendarViewSwitcher from "@/presentation/components/calendar/CalendarViewSwitcher.vue"
+import { getTasks } from "@/domain/services/taskService"
 
 const route = useRoute()
 const calendarStore = useCalendarStore()
@@ -19,6 +21,47 @@ function getStartOfWeek(date: Date) {
   return start
 }
 
+const tasks = ref<any[]>([])
+
+onMounted(async () => {
+
+  const data = await getTasks()
+
+  if (Array.isArray(data)) {
+    tasks.value = data
+  } else {
+    tasks.value = []
+  }
+
+})
+
+function formatDate(date: Date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, "0")
+  const d = String(date.getDate()).padStart(2, "0")
+
+  return `${y}-${m}-${d}`
+}
+
+const pointsByDay = computed(() => {
+
+  const map: Record<string, number> = {}
+
+  tasks.value.forEach(task => {
+
+    if (task.status !== "done") return
+
+    if (!map[task.date]) {
+      map[task.date] = 0
+    }
+
+    map[task.date] += task.points
+
+  })
+
+  return map
+})
+
 const currentDate = computed(() => {
 
   const dateParam = route.params.date as string
@@ -26,6 +69,11 @@ const currentDate = computed(() => {
 
   return new Date(y, m - 1, d)
 
+})
+
+const totalWeekPoints = computed(() => {
+  return Object.values(pointsByDay.value)
+    .reduce((sum, points) => sum + points, 0)
 })
 
 const weekDays = computed(() => {
@@ -41,7 +89,7 @@ const weekDays = computed(() => {
 
     days.push({
       date,
-      points: 0
+      fullDate: formatDate(date)
     })
 
   }
@@ -49,10 +97,11 @@ const weekDays = computed(() => {
   return days
 
 })
-
 </script>
 
 <template>
+
+<CalendarViewSwitcher />
 
 <div class="week-view">
 
@@ -71,12 +120,16 @@ const weekDays = computed(() => {
       {{ day.date.getDate() }}
     </div>
 
-    <div class="points">
-      ⭐ {{ day.points }}
+    <div class="points" v-if="pointsByDay[day.fullDate]">
+      ⭐ {{ pointsByDay[day.fullDate] }}
     </div>
 
   </div>
 
+</div>
+
+<div class="week-total">
+  ⭐ Total da semana: {{ totalWeekPoints }}
 </div>
 
 </template>

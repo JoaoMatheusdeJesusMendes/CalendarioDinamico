@@ -6,6 +6,7 @@ import { getTasks } from "@/domain/services/taskService"
 import type { Task } from "@/domain/models/Task"
 import TaskItem from "@/presentation/pages/TaskItem.vue"
 import TaskDetailModal from "@/presentation/pages/TaskDetailModal.vue"
+import CalendarViewSwitcher from "@/presentation/components/calendar/CalendarViewSwitcher.vue"
 
 const route = useRoute()
 const router = useRouter()
@@ -89,6 +90,8 @@ function goToEdit(task: Task) {
 <template>
 
 <div class="day-view">
+
+  <CalendarViewSwitcher />
 
   <h2 class="date">
     {{ formattedDate }}

@@ -3,8 +3,6 @@
 import { computed } from "vue"
 import { useCalendarStore } from "../../../stores/calendarStore"
 
-import CalendarHeader from "./CalendarHeader.vue"
-
 import CalendarDayView from "./views/CalendarDayView.vue"
 import CalendarWeekView from "./views/CalendarWeekView.vue"
 import CalendarMonthView from "./views/CalendarMonthView.vue"
@@ -37,7 +35,7 @@ const currentView = computed(() => {
 
 <div class="calendar">
 
-  <CalendarHeader />
+
 
   <component :is="currentView" />
 

@@ -3,6 +3,7 @@
 import { computed } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import { useCalendarStore } from "../../../../stores/calendarStore"
+import CalendarViewSwitcher from "@/presentation/components/calendar/CalendarViewSwitcher.vue"
 
 const router = useRouter()
 const route = useRoute()
@@ -43,6 +44,8 @@ function openMonth(monthIndex: number) {
 </script>
 
 <template>
+
+<CalendarViewSwitcher />
 
 <div class="year-view">
 

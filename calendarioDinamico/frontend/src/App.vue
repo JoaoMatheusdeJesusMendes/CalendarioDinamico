@@ -1,14 +1,10 @@
 <script setup lang="ts">
 
-import CalendarViewSwitcher from "@/presentation/components/calendar/CalendarViewSwitcher.vue"
-
 </script>
 
 <template>
 
 <div>
-
-  <CalendarViewSwitcher />
 
   <RouterView :key="$route.fullPath" />
 
