@@ -14,18 +14,24 @@ const age = ref()
 
 async function submit(){
 
-  const response = await register({
-    name: name.value,
-    email: email.value,
-    password: password.value,
-    age: age.value
-  })
+  try{
 
-  localStorage.setItem("token", response.token)
+    const response = await register({
+      name: name.value,
+      email: email.value,
+      password: password.value,
+      age: age.value
+    })
 
-  const today = new Date()
+    alert(response.message)
 
-  router.push(`/month/${today.getFullYear()}/${today.getMonth()+1}`)
+    router.push("/login")
+
+  }catch(error:any){
+
+    alert(error.message || "Erro ao registrar")
+
+  }
 
 }
 

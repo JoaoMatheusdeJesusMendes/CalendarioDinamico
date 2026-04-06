@@ -1,36 +1,65 @@
 <script setup lang="ts">
 
-import { computed } from "vue"
+import { computed, ref, onMounted } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import { useCalendarStore } from "../../../../stores/calendarStore"
 import CalendarViewSwitcher from "@/presentation/components/calendar/CalendarViewSwitcher.vue"
+import { getTasks } from "@/domain/services/taskService"
 
 const router = useRouter()
 const route = useRoute()
 const calendarStore = useCalendarStore()
 const year = computed(() => Number(route.params.year))
+const tasks = ref<any[]>([])
+
+const pointsByMonth = computed(() => {
+  const map: Record<number, number> = {}
+
+  tasks.value.forEach(task => {
+    if (task.status !== "done") return
+
+    const taskDate = new Date(task.date)
+    if (Number.isNaN(taskDate.getTime())) return
+
+    const taskYear = taskDate.getFullYear()
+    if (taskYear !== year.value) return
+
+    const monthIndex = taskDate.getMonth()
+    map[monthIndex] = (map[monthIndex] || 0) + task.points
+  })
+
+  return map
+})
 
 const months = computed(() => {
-
   const monthNames = [
     "Jan","Fev","Mar","Abr","Mai","Jun",
     "Jul","Ago","Set","Out","Nov","Dez"
   ]
 
-  return monthNames.map((name, index) => {
+  return monthNames.map((name, index) => ({
+    name,
+    date: new Date(year.value, index, 1),
+    points: pointsByMonth.value[index] || 0
+  }))
+})
 
-    return {
-      name,
-      date: new Date(year.value, index, 1),
-      points: 0
-    }
+const totalYearPoints = computed(() => {
+  return months.value.reduce((sum, month) => sum + month.points, 0)
+})
 
-  })
+onMounted(async () => {
+  const data = await getTasks()
 
+  if (Array.isArray(data)) {
+    tasks.value = data
+  } else {
+    console.error("Erro ao carregar tasks:", data)
+    tasks.value = []
+  }
 })
 
 function openMonth(monthIndex: number) {
-
   router.push({
     name: "month",
     params: {
@@ -38,7 +67,6 @@ function openMonth(monthIndex: number) {
       month: monthIndex + 1
     }
   })
-
 }
 
 </script>
@@ -66,6 +94,10 @@ function openMonth(monthIndex: number) {
 
   </div>
 
+</div>
+
+<div class="year-total">
+  ⭐ Total do ano: {{ totalYearPoints }}
 </div>
 
 </template>
@@ -105,6 +137,13 @@ border-radius:6px;
 
 .month:hover{
 background:#f5f5f5;
+}
+
+.year-total{
+  margin: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: goldenrod;
 }
 
 </style>

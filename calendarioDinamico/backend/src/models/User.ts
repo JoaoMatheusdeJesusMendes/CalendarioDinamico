@@ -23,6 +23,11 @@ type:Number
 
 googleId:{
 type:String
+},
+
+isVerified: {
+  type: Boolean,
+  default: false
 }
 
 })

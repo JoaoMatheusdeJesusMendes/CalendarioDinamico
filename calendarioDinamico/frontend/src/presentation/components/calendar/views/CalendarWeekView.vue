@@ -72,8 +72,10 @@ const currentDate = computed(() => {
 })
 
 const totalWeekPoints = computed(() => {
-  return Object.values(pointsByDay.value)
-    .reduce((sum, points) => sum + points, 0)
+  return weekDays.value.reduce((sum, day) => {
+    const points = pointsByDay.value[day.fullDate] || 0
+    return sum + points
+  }, 0)
 })
 
 const weekDays = computed(() => {
@@ -120,8 +122,8 @@ const weekDays = computed(() => {
       {{ day.date.getDate() }}
     </div>
 
-    <div class="points" v-if="pointsByDay[day.fullDate]">
-      ⭐ {{ pointsByDay[day.fullDate] }}
+    <div class="points">
+      ⭐ {{ pointsByDay[day.fullDate] || 0 }}
     </div>
 
   </div>

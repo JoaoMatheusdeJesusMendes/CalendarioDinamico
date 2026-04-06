@@ -17,15 +17,26 @@ async function submit(){
       password: password.value
     })
 
+    // 🔥 garante que veio token
+    if (!response.token) {
+      throw new Error(response.message || "Erro ao fazer login")
+    }
+
     localStorage.setItem("token", response.token)
 
     const today = new Date()
 
     router.push(`/month/${today.getFullYear()}/${today.getMonth()+1}`)
 
-  }catch(error){
+  }catch(error:any){
 
-    alert("Email ou senha inválidos")
+    if (error.message.includes("Verifique seu email")) {
+      alert("Você precisa verificar seu email antes de entrar.")
+    } else if (error.message.includes("Credenciais")) {
+      alert("Email ou senha inválidos")
+    } else {
+      alert("Erro ao fazer login")
+    }
 
   }
 
