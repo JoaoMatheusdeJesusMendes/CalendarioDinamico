@@ -65,6 +65,16 @@ const router = createRouter({
       path: "/edit-task/:id",
       name: "editTask",
       component: EditTaskPage
+    },
+    {
+      path: "/forgot-password",
+      name: "forgotPassword",
+      component: () => import("@/presentation/pages/ForgotPassword.vue")
+    },
+    {
+      path: "/reset-password",
+      name: "resetPassword",
+      component: () => import("@/presentation/pages/ResetPassword.vue")
     }
   ]
 })

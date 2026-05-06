@@ -1,40 +1,29 @@
-const API = "http://localhost:3000"
+import api from "@/infra/api"
 
-export async function register(data:any){
-
-  const res = await fetch("http://localhost:3000/auth/register",{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify(data)
-  })
-
-  const text = await res.text()
-
-  console.log("Resposta backend:", text)
-
-  return JSON.parse(text)
-
+export async function forgotPassword(email: string){
+  const res = await api.post("/auth/forgot-password", { email })
+  return res.data
 }
 
-export async function login(credentials:any){
-
-  const res = await fetch("http://localhost:3000/auth/login",{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify(credentials)
+export async function resetPassword(token: string, password: string){
+  const res = await api.post("/auth/reset-password", {
+    token,
+    password
   })
+  return res.data
+}
 
-  const data = await res.json()
+export async function register(data: any){
+  const res = await api.post("/auth/register", data)
+  return res.data
+}
 
-  console.log("LOGIN RESPONSE:", data)
-
-  if(!res.ok){
-    throw new Error(data.message || "Erro no login")
+export async function login(credentials: any){
+  try {
+    const res = await api.post("/auth/login", credentials)
+    return res.data
+  } catch (error: any) {
+    const message = error.response?.data?.message || "Erro no login"
+    throw new Error(message)
   }
-
-  return data
 }

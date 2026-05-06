@@ -28,8 +28,17 @@ type:String
 isVerified: {
   type: Boolean,
   default: false
-}
+},
 
+resetToken: {
+    type: String,
+    default: null
+  },
+
+resetTokenExpires: {
+  type: Date,
+  default: null
+}
 })
 
 export default mongoose.model("User",UserSchema)

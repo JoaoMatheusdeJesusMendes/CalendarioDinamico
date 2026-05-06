@@ -3,6 +3,8 @@ import User from "../models/User"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import nodemailer from "nodemailer"
+import { v4 as uuidv4 } from "uuid"
+import { sendResetEmail } from "../service/emailService"
 
 export const register = async (req: Request, res: Response) => {
 
@@ -62,6 +64,55 @@ export const register = async (req: Request, res: Response) => {
 
   }
 
+}
+
+export async function resetPassword(req: Request, res: Response){
+  const { token, password } = req.body
+
+  const user = await User.findOne({
+    resetToken: token,
+    resetTokenExpires: { $gt: new Date() }
+  })
+
+  if (!user) {
+    return res.status(400).json({ message: "Token inválido ou expirado" })
+  }
+
+  user.password = await bcrypt.hash(password, 10)
+  user.resetToken = undefined
+  user.resetTokenExpires = undefined
+
+  await user.save()
+
+  return res.json({ message: "Senha atualizada com sucesso" })
+}
+
+export async function forgotPassword(req: Request, res: Response){
+  try {
+    const { email } = req.body
+
+    const user = await User.findOne({ email })
+
+    if (!user) {
+      return res.json({ message: "Se existir, enviamos um email." })
+    }
+
+    const token = uuidv4()
+
+    user.resetToken = token
+    user.resetTokenExpires = new Date(Date.now() + 1000 * 60 * 60)
+
+    await user.save()
+    try {
+      await sendResetEmail(email, token)
+    } catch (error) {
+    }
+
+    return res.json({ message: "Se existir, enviamos um email." })
+
+  } catch (error) {
+    return res.status(500).json({ message: "Erro interno" })
+  }
 }
 
 export const login = async (req: Request, res: Response) => {

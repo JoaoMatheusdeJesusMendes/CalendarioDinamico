@@ -2,13 +2,11 @@
 
 import { computed, ref, onMounted } from "vue"
 import { useRouter, useRoute } from "vue-router"
-import { useCalendarStore } from "../../../../stores/calendarStore"
 import CalendarViewSwitcher from "@/presentation/components/calendar/CalendarViewSwitcher.vue"
 import { getTasks } from "@/domain/services/taskService"
 
 const router = useRouter()
 const route = useRoute()
-const calendarStore = useCalendarStore()
 const year = computed(() => Number(route.params.year))
 const tasks = ref<any[]>([])
 

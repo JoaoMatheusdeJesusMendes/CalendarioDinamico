@@ -8,6 +8,10 @@ const router = useRouter()
 const email = ref("")
 const password = ref("")
 
+function goToForgotPassword() {
+  router.push("/forgot-password")
+}
+
 async function submit(){
 
   try{
@@ -58,6 +62,10 @@ Entrar
 
 <button>
 Entrar com Google
+</button>
+
+<button @click="goToForgotPassword">
+Esqueci minha senha
 </button>
 
 </div>
