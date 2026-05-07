@@ -20,7 +20,6 @@ async function changeStatus() {
     status: newStatus
   })
 
-  // 🔥 Atualiza local (UX rápida)
   props.task.status = newStatus
 }
 

@@ -1,7 +1,7 @@
 export interface Task {
 
   _id: string
-  date: string
+  date: Date
   startTime: string
   endTime: string
   location?: string

@@ -1,6 +1,8 @@
 import express from "express"
 import cors from "cors"
 import dotenv from "dotenv"
+import { startDailyReminder } from "./service/dailyReminderService"
+import { startWeeklyReport } from "./service/weeklyReportService"
 
 import { connectDB } from "./config/db"
 
@@ -15,6 +17,8 @@ app.use(cors())
 app.use(express.json())
 
 connectDB()
+startDailyReminder()
+startWeeklyReport()
 
 app.use("/auth", authRoutes)
 app.use("/tasks", taskRoutes)

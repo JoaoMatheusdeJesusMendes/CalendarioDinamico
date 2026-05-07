@@ -3,26 +3,26 @@ import mongoose from "mongoose"
 const UserSchema = new mongoose.Schema({
 
 name:{
-type:String,
-required:true
+  type:String,
+  required:true
 },
 
 email:{
-type:String,
-required:true,
-unique:true
+  type:String,
+  required:true,
+  unique:true
 },
 
 password:{
-type:String
+  type:String
 },
 
 age:{
-type:Number
+  type:Number
 },
 
 googleId:{
-type:String
+  type:String
 },
 
 isVerified: {
@@ -31,9 +31,9 @@ isVerified: {
 },
 
 resetToken: {
-    type: String,
-    default: null
-  },
+  type: String,
+  default: null
+},
 
 resetTokenExpires: {
   type: Date,

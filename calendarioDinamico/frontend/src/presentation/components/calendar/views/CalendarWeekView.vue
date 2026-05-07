@@ -35,6 +35,14 @@ onMounted(async () => {
 
 })
 
+function normalizeDate(date: Date | string){
+
+  return new Date(date)
+    .toISOString()
+    .slice(0,10)
+
+}
+
 function formatDate(date: Date) {
   const y = date.getFullYear()
   const m = String(date.getMonth() + 1).padStart(2, "0")
@@ -51,15 +59,18 @@ const pointsByDay = computed(() => {
 
     if (task.status !== "done") return
 
-    if (!map[task.date]) {
-      map[task.date] = 0
+    const taskDate = normalizeDate(task.date)
+
+    if (!map[taskDate]) {
+      map[taskDate] = 0
     }
 
-    map[task.date] += task.points
+    map[taskDate] += task.points
 
   })
 
   return map
+
 })
 
 const currentDate = computed(() => {

@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer"
 import dotenv from "dotenv"
+import fs from "fs"
 
 dotenv.config()
 
@@ -34,4 +35,87 @@ export async function sendResetEmail(email: string, token: string){
     console.error("🔥 ERRO AO ENVIAR EMAIL:", error)
     throw error
   }
+}
+
+export async function sendDailyTasksEmail(
+  email: string,
+  tasks: any[]
+){
+  try {
+
+    const tasksHtml = tasks.map(task => `
+      <li>
+        <strong>${task.description}</strong>
+        - ${task.points || 0} pontos
+      </li>
+    `).join("")
+
+    await transporter.sendMail({
+      from: `"Calendário" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "📅 Suas tarefas de hoje",
+      html: `
+        <h2>Bom dia! ☀️</h2>
+
+        <p>Essas são suas tarefas de hoje:</p>
+
+        <ul>
+          ${tasksHtml}
+        </ul>
+
+        <p>Boa produtividade 🚀</p>
+      `
+    })
+
+    console.log(`Email diário enviado para ${email}`)
+
+  } catch(error){
+    console.error("Erro ao enviar lembrete diário:", error)
+  }
+}
+
+export async function sendReportEmail(
+  email: string,
+  filePath: string
+){
+
+  try {
+
+    console.log("📁 Caminho recebido:", filePath)
+
+    console.log(
+      "Arquivo existe?",
+      fs.existsSync(filePath)
+    )
+
+    await transporter.sendMail({
+
+      from: `"Calendário" <${process.env.EMAIL_USER}>`,
+
+      to: email,
+
+      subject: "📊 Relatório semanal",
+
+      html: `
+        <h2>Seu relatório semanal</h2>
+        <p>O arquivo Excel está anexado 📎</p>
+      `,
+
+      attachments: [
+        {
+          filename: "relatorio.xlsx",
+          path: filePath
+        }
+      ]
+
+    })
+
+    console.log(`✅ Relatório enviado para ${email}`)
+
+  } catch(error){
+
+    console.error("❌ Erro ao enviar relatório:", error)
+
+  }
+
 }

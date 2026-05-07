@@ -17,7 +17,7 @@ const status = ref("todo")
 async function submit(){
 
   await createTask({
-    date: date.value,
+    date: new Date(date.value),
     startTime: startTime.value,
     endTime: endTime.value,
     location: location.value,

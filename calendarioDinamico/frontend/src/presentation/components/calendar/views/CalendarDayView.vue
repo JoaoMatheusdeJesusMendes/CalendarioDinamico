@@ -41,14 +41,15 @@ onMounted(async () => {
 
   const data = await getTasks()
 
-  console.log("Tasks recebidas:", data)
-  console.log("Data da rota:", dateString.value)
-
   if (Array.isArray(data)) {
 
-    tasks.value = data.filter(
-      (task:any) => task.date === dateString.value
-    )
+    tasks.value = data.filter((task:any) => {
+
+      return new Date(task.date)
+        .toISOString()
+        .slice(0,10) === dateString.value
+
+    })
 
   } else {
 
