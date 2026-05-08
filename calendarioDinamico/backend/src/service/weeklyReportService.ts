@@ -20,7 +20,8 @@ export function startWeeklyReport(){
 
       await sendReportEmail(
         user.email,
-        filePath
+        filePath,
+        "weekly"
       )
 
       console.log("✅ Relatório enviado")

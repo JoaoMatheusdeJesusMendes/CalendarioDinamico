@@ -3,6 +3,8 @@ import cors from "cors"
 import dotenv from "dotenv"
 import { startDailyReminder } from "./service/dailyReminderService"
 import { startWeeklyReport } from "./service/weeklyReportService"
+import { startMonthlyReport } from "./service/monthlyReportService"
+import { startYearlyReport  } from "./service/yearlyReportService"
 
 import { connectDB } from "./config/db"
 
@@ -19,6 +21,8 @@ app.use(express.json())
 connectDB()
 startDailyReminder()
 startWeeklyReport()
+startMonthlyReport()
+startYearlyReport()
 
 app.use("/auth", authRoutes)
 app.use("/tasks", taskRoutes)

@@ -76,7 +76,8 @@ export async function sendDailyTasksEmail(
 
 export async function sendReportEmail(
   email: string,
-  filePath: string
+  filePath: string,
+  type: "weekly" | "monthly" | "yearly"
 ){
 
   try {
@@ -88,34 +89,61 @@ export async function sendReportEmail(
       fs.existsSync(filePath)
     )
 
+    const subjects = {
+      weekly: "📊 Relatório semanal",
+      monthly: "📅 Relatório mensal",
+      yearly: "📈 Relatório anual"
+    }
+
+    const titles = {
+      weekly: "Seu relatório semanal",
+      monthly: "Seu relatório mensal",
+      yearly: "Seu relatório anual"
+    }
+
+    const filenames = {
+      weekly: "relatorio-semanal.xlsx",
+      monthly: "relatorio-mensal.xlsx",
+      yearly: "relatorio-anual.xlsx"
+    }
+
     await transporter.sendMail({
 
       from: `"Calendário" <${process.env.EMAIL_USER}>`,
 
       to: email,
 
-      subject: "📊 Relatório semanal",
+      subject: subjects[type],
 
       html: `
-        <h2>Seu relatório semanal</h2>
-        <p>O arquivo Excel está anexado 📎</p>
+        <h2>${titles[type]}</h2>
+
+        <p>
+          O arquivo Excel está anexado 📎
+        </p>
       `,
 
       attachments: [
         {
-          filename: "relatorio.xlsx",
+          filename: filenames[type],
           path: filePath
         }
       ]
 
     })
 
-    console.log(`✅ Relatório enviado para ${email}`)
+    console.log(
+      `✅ Relatório ${type} enviado para ${email}`
+    )
 
   } catch(error){
 
-    console.error("❌ Erro ao enviar relatório:", error)
+    console.error(
+      "❌ Erro ao enviar relatório:",
+      error
+    )
 
   }
 
 }
+
