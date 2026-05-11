@@ -1,13 +1,12 @@
 <script setup lang="ts">
-
+import AppHeader from "@/presentation/components/layout/AppHeader.vue"
 </script>
 
 <template>
 
 <div>
-
+  <AppHeader/>
   <RouterView :key="$route.fullPath" />
-
 </div>
 
 </template>

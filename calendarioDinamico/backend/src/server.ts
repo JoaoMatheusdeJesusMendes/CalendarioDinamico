@@ -5,6 +5,7 @@ import { startDailyReminder } from "./service/dailyReminderService"
 import { startWeeklyReport } from "./service/weeklyReportService"
 import { startMonthlyReport } from "./service/monthlyReportService"
 import { startYearlyReport  } from "./service/yearlyReportService"
+import userRoutes from "./routes/userRoutes"
 
 import { connectDB } from "./config/db"
 
@@ -26,6 +27,7 @@ startYearlyReport()
 
 app.use("/auth", authRoutes)
 app.use("/tasks", taskRoutes)
+app.use("/users", userRoutes)
 
 const PORT = process.env.PORT || 3000
 

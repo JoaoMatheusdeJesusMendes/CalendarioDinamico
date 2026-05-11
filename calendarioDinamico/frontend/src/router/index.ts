@@ -75,6 +75,18 @@ const router = createRouter({
       path: "/reset-password",
       name: "resetPassword",
       component: () => import("@/presentation/pages/ResetPassword.vue")
+    },
+    {
+      path: "/profile",
+      name: "profile",
+      component: () => import("@/presentation/pages/ProfilePage.vue"),
+      meta: { requiresAuth: true } 
+    },
+    {
+      path: "/profile/edit",
+      name: "editProfile",
+      component: () => import("@/presentation/pages/EditProfilePage.vue"),
+      meta: { requiresAuth: true }
     }
   ]
 })

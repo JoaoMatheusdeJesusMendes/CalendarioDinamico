@@ -35,8 +35,6 @@ const currentView = computed(() => {
 
 <div class="calendar">
 
-
-
   <component :is="currentView" />
 
 </div>

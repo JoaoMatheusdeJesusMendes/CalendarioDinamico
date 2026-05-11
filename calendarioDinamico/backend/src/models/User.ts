@@ -21,6 +21,11 @@ age:{
   type:Number
 },
 
+profileImage: {
+  type: String,
+  default: ""
+},
+
 googleId:{
   type:String
 },
@@ -39,6 +44,7 @@ resetTokenExpires: {
   type: Date,
   default: null
 }
+
 })
 
 export default mongoose.model("User",UserSchema)
