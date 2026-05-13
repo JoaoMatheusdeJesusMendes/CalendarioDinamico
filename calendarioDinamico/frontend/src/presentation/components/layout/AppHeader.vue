@@ -56,7 +56,7 @@ function goToView(view: "day" | "week" | "month" | "year") {
 function logout() {
   localStorage.removeItem("token")
   showMenu.value = false
-  router.push("/login")
+  router.push("/landing")
 }
 
 function goToLogin() {
@@ -86,7 +86,6 @@ function goToProfile() {
       📅 Calendário Dinâmico
     </div>
 
-    <!-- Navegação só aparece quando o usuário estiver logado -->
     <nav
       v-if="isAuthenticated"
       class="navigation"

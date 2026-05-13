@@ -12,3 +12,15 @@ export async function updateProfile(
   const response = await api.put("/users/profile", data)
   return response.data
 }
+
+export async function generateReport(data: {
+  type: string
+  date: string
+}) {
+  const response = await api.post(
+    "/users/generate-report",
+    data
+  )
+
+  return response.data
+}

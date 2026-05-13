@@ -4,8 +4,8 @@ import path from "path"
 
 import Task from "../models/Task"
 
-export async function generateUserReport(user: any){
-
+export async function generateUserReport( user: any, referenceDate?: Date) 
+{
   const workbook = new ExcelJS.Workbook()
 
   const sheet = workbook.addWorksheet("Semanal")
@@ -15,7 +15,7 @@ export async function generateUserReport(user: any){
     { header: "Pontos", key: "points", width: 15 }
   ]
 
-  const today = new Date()
+  const today = referenceDate || new Date()
 
   const startOfWeek = new Date(today)
 
@@ -25,14 +25,13 @@ export async function generateUserReport(user: any){
 
   startOfWeek.setDate(startOfWeek.getDate() + diff)
 
-  startOfWeek.setHours(0,0,0,0)
+  startOfWeek.setHours(0, 0, 0, 0)
 
   const endOfWeek = new Date(startOfWeek)
 
   endOfWeek.setDate(endOfWeek.getDate() + 7)
 
   const tasks = await Task.find({
-
     userId: user._id,
 
     date: {
@@ -41,13 +40,11 @@ export async function generateUserReport(user: any){
     },
 
     status: "done"
-
   })
 
   const pointsMap: Record<string, number> = {}
 
   tasks.forEach(task => {
-
     const date = new Date(task.date)
 
     const key = date.toISOString().slice(0, 10)
@@ -57,39 +54,36 @@ export async function generateUserReport(user: any){
     }
 
     pointsMap[key] += task.points
-
   })
 
-const weekDays = [
-  "Segunda",
-  "Terça",
-  "Quarta",
-  "Quinta",
-  "Sexta",
-  "Sábado",
-  "Domingo"
-]
+  const weekDays = [
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sábado",
+    "Domingo"
+  ]
 
-let total = 0
+  let total = 0
 
-for(let i = 0; i < 7; i++){
+  for (let i = 0; i < 7; i++) {
+    const currentDate = new Date(startOfWeek)
 
-  const currentDate = new Date(startOfWeek)
+    currentDate.setDate(startOfWeek.getDate() + i)
 
-  currentDate.setDate(startOfWeek.getDate() + i)
+    const key = currentDate.toISOString().slice(0, 10)
 
-  const key = currentDate.toISOString().slice(0, 10)
+    const points = pointsMap[key] || 0
 
-  const points = pointsMap[key] || 0
+    sheet.addRow({
+      day: weekDays[i],
+      points
+    })
 
-  sheet.addRow({
-    day: weekDays[i],
-    points
-  })
-
-  total += points
-
-}
+    total += points
+  }
 
   sheet.addRow([])
 
@@ -114,11 +108,13 @@ for(let i = 0; i < 7; i++){
   return filePath
 }
 
-export async function generateMonthlyReport(user: any){
-
+export async function generateMonthlyReport(
+  user: any,
+  referenceDate?: Date
+) {
   const workbook = new ExcelJS.Workbook()
 
-  const today = new Date()
+  const today = referenceDate || new Date()
 
   const year = today.getFullYear()
   const month = today.getMonth()
@@ -155,7 +151,6 @@ export async function generateMonthlyReport(user: any){
   const endOfMonth = new Date(year, month + 1, 1)
 
   const tasks = await Task.find({
-
     userId: user._id,
 
     date: {
@@ -164,36 +159,32 @@ export async function generateMonthlyReport(user: any){
     },
 
     status: "done"
-
   })
 
   const pointsMap: Record<string, number> = {}
 
   tasks.forEach(task => {
-
     const date = new Date(task.date)
 
-    const key = date.toISOString().slice(0,10)
+    const key = date.toISOString().slice(0, 10)
 
-    if(!pointsMap[key]){
+    if (!pointsMap[key]) {
       pointsMap[key] = 0
     }
 
     pointsMap[key] += task.points
-
   })
 
   const daysInMonth = new Date(year, month + 1, 0).getDate()
 
   let total = 0
 
-  for(let day = 1; day <= daysInMonth; day++){
-
+  for (let day = 1; day <= daysInMonth; day++) {
     const currentDate = new Date(year, month, day)
 
     const key = currentDate
       .toISOString()
-      .slice(0,10)
+      .slice(0, 10)
 
     const formattedDate =
       currentDate.toLocaleDateString("pt-BR")
@@ -217,7 +208,7 @@ export async function generateMonthlyReport(user: any){
 
   const reportsDir = path.resolve("reports")
 
-  if(!fs.existsSync(reportsDir)){
+  if (!fs.existsSync(reportsDir)) {
     fs.mkdirSync(reportsDir)
   }
 
@@ -231,13 +222,13 @@ export async function generateMonthlyReport(user: any){
   return filePath
 }
 
-export async function generateYearlyReport(user: any){
-
+export async function generateYearlyReport( user: any, referenceDate?: Date) 
+{
   const workbook = new ExcelJS.Workbook()
 
   const sheet = workbook.addWorksheet("Anual")
 
-  const today = new Date()
+  const today = referenceDate || new Date()
 
   const year = today.getFullYear()
 
@@ -271,7 +262,6 @@ export async function generateYearlyReport(user: any){
   const endOfYear = new Date(year + 1, 0, 1)
 
   const tasks = await Task.find({
-
     userId: user._id,
 
     date: {
@@ -280,31 +270,27 @@ export async function generateYearlyReport(user: any){
     },
 
     status: "done"
-
   })
 
   const pointsMap: Record<string, number> = {}
 
   tasks.forEach(task => {
-
     const date = new Date(task.date)
 
     const key = date
       .toISOString()
-      .slice(0,10)
+      .slice(0, 10)
 
-    if(!pointsMap[key]){
+    if (!pointsMap[key]) {
       pointsMap[key] = 0
     }
 
     pointsMap[key] += task.points
-
   })
 
   let yearlyTotal = 0
 
-  for(let month = 0; month < 12; month++){
-
+  for (let month = 0; month < 12; month++) {
     sheet.addRow([
       monthNames[month].toUpperCase()
     ])
@@ -317,8 +303,7 @@ export async function generateYearlyReport(user: any){
 
     let monthTotal = 0
 
-    for(let day = 1; day <= daysInMonth; day++){
-
+    for (let day = 1; day <= daysInMonth; day++) {
       const currentDate = new Date(
         year,
         month,
@@ -327,7 +312,7 @@ export async function generateYearlyReport(user: any){
 
       const key = currentDate
         .toISOString()
-        .slice(0,10)
+        .slice(0, 10)
 
       const formattedDate =
         currentDate.toLocaleDateString("pt-BR")
@@ -341,7 +326,6 @@ export async function generateYearlyReport(user: any){
 
       monthTotal += points
       yearlyTotal += points
-
     }
 
     sheet.addRow({
@@ -350,7 +334,6 @@ export async function generateYearlyReport(user: any){
     })
 
     sheet.addRow([])
-
   }
 
   sheet.addRow([])
@@ -362,7 +345,7 @@ export async function generateYearlyReport(user: any){
 
   const reportsDir = path.resolve("reports")
 
-  if(!fs.existsSync(reportsDir)){
+  if (!fs.existsSync(reportsDir)) {
     fs.mkdirSync(reportsDir)
   }
 
