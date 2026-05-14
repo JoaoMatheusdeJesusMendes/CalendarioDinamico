@@ -121,7 +121,8 @@ export async function getPerformanceData(
     }
   }
 
-  else if (type === "monthly") {
+ else if (type === "monthly") 
+  {
     const year = referenceDate.getFullYear()
     const month = referenceDate.getMonth()
 
@@ -137,40 +138,41 @@ export async function getPerformanceData(
       }
     })
 
-    const pointsPerDay: Record<number, number> = {}
+    const firstWeekStart = getStartOfWeek(startOfMonth)
+
+    const lastDayOfMonth = new Date(year, month + 1, 0)
+
+    const totalDays = Math.floor(
+      (lastDayOfMonth.getTime() - firstWeekStart.getTime()) /
+      (1000 * 60 * 60 * 24)
+    ) + 1
+
+    const totalWeeks = Math.ceil(totalDays / 7)
+
+    const weeklyTotals = new Array(totalWeeks).fill(0)
 
     tasks.forEach(task => {
-      const day = new Date(task.date).getDate()
+      const taskDate = new Date(task.date)
+      taskDate.setHours(12, 0, 0, 0)
 
-      pointsPerDay[day] =
-        (pointsPerDay[day] || 0) + (task.points || 0)
+      const diffInDays = Math.floor(
+        (taskDate.getTime() - firstWeekStart.getTime()) /
+        (1000 * 60 * 60 * 24)
+      )
+
+      const weekIndex = Math.floor(diffInDays / 7)
+
+      if (weekIndex >= 0 && weekIndex < totalWeeks) {
+        weeklyTotals[weekIndex] += task.points || 0
+      }
     })
 
-    const daysInMonth = new Date(
-      year,
-      month + 1,
-      0
-    ).getDate()
+    labels = Array.from(
+      { length: totalWeeks },
+      (_, index) => `Semana ${index + 1}`
+    )
 
-    labels = []
-    dataValues = []
-
-    let weekIndex = 1
-
-    for (let startDay = 1; startDay <= daysInMonth; startDay += 7) {
-      const endDay = Math.min(startDay + 6, daysInMonth)
-
-      let total = 0
-
-      for (let day = startDay; day <= endDay; day++) {
-        total += pointsPerDay[day] || 0
-      }
-
-      labels.push(`Semana ${weekIndex}`)
-      dataValues.push(total)
-
-      weekIndex++
-    }
+    dataValues = weeklyTotals
   }
 
   else if (type === "yearly") {

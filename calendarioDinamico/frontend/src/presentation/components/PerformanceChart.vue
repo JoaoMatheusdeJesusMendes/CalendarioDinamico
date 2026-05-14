@@ -1,31 +1,32 @@
 <script setup lang="ts">
 import {
   Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
-  Legend,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale
+  Legend
 } from "chart.js"
 
 import { Line } from "vue-chartjs"
 import { computed } from "vue"
 
 ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
-  Legend,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale
+  Legend
 )
 
 const props = defineProps<{
   labels: string[]
   values: number[]
+  options?: any
 }>()
 
 const chartData = computed(() => ({
@@ -34,31 +35,29 @@ const chartData = computed(() => ({
     {
       label: "Pontos",
       data: props.values,
-      borderColor: "#2563eb",
-      backgroundColor: "rgba(37, 99, 235, 0.15)",
       tension: 0.3,
-      fill: true
+      fill: false,
+      borderColor: "#2563eb",
+      backgroundColor: "#2563eb"
     }
   ]
 }))
 
-const chartOptions = {
+const defaultOptions = {
   responsive: true,
   maintainAspectRatio: false
 }
+
+const finalOptions = computed(() => {
+  return props.options || defaultOptions
+})
 </script>
 
 <template>
-  <div class="chart-container">
+  <div style="height: 400px;">
     <Line
       :data="chartData"
-      :options="chartOptions"
+      :options="finalOptions"
     />
   </div>
 </template>
-
-<style scoped>
-.chart-container {
-  height: 400px;
-}
-</style>

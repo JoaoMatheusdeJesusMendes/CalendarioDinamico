@@ -56,7 +56,7 @@ function goToView(view: "day" | "week" | "month" | "year") {
 function logout() {
   localStorage.removeItem("token")
   showMenu.value = false
-  router.push("/landing")
+  router.push("/")
 }
 
 function goToLogin() {
