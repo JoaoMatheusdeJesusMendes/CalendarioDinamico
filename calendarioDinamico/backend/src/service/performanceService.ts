@@ -63,8 +63,10 @@ export async function getPerformanceData(
   const completedTasks = allTasks.length
 
   const activeDaysSet = new Set(
-    allTasks.map(task =>
-      formatKey(new Date(task.date))
+  allTasks
+    .filter(task => task.completedAt)
+    .map(task =>
+      formatKey(new Date(task.completedAt!))
     )
   )
 
@@ -94,7 +96,7 @@ export async function getPerformanceData(
     const tasks = await Task.find({
       userId,
       status: "done",
-      date: {
+      completedAt: {
         $gte: startOfWeek,
         $lt: endOfWeek
       }
@@ -103,7 +105,7 @@ export async function getPerformanceData(
     const pointsMap: Record<string, number> = {}
 
     tasks.forEach(task => {
-      const key = formatKey(new Date(task.date))
+      const key = formatKey(new Date(task.completedAt!))
       pointsMap[key] =
         (pointsMap[key] || 0) + (task.points || 0)
     })
@@ -132,7 +134,7 @@ export async function getPerformanceData(
     const tasks = await Task.find({
       userId,
       status: "done",
-      date: {
+      completedAt: {
         $gte: startOfMonth,
         $lt: endOfMonth
       }
@@ -152,7 +154,7 @@ export async function getPerformanceData(
     const weeklyTotals = new Array(totalWeeks).fill(0)
 
     tasks.forEach(task => {
-      const taskDate = new Date(task.date)
+      const taskDate = new Date(task.completedAt!)
       taskDate.setHours(12, 0, 0, 0)
 
       const diffInDays = Math.floor(
@@ -184,7 +186,7 @@ export async function getPerformanceData(
     const tasks = await Task.find({
       userId,
       status: "done",
-      date: {
+      completedAt: {
         $gte: startOfYear,
         $lt: endOfYear
       }
@@ -193,7 +195,7 @@ export async function getPerformanceData(
     const pointsPerMonth = new Array(12).fill(0)
 
     tasks.forEach(task => {
-      const month = new Date(task.date).getMonth()
+      const month = new Date(task.completedAt!).getMonth()
 
       pointsPerMonth[month] += task.points || 0
     })

@@ -33,27 +33,25 @@ export async function generateUserReport( user: any, referenceDate?: Date)
 
   const tasks = await Task.find({
     userId: user._id,
-
-    date: {
+    status: "done",
+    completedAt: {
+      $exists: true,
       $gte: startOfWeek,
       $lt: endOfWeek
-    },
-
-    status: "done"
+    }
   })
 
   const pointsMap: Record<string, number> = {}
 
   tasks.forEach(task => {
-    const date = new Date(task.date)
-
-    const key = date.toISOString().slice(0, 10)
+    const date = new Date(task.completedAt!)
+    const key = formatKey(date)
 
     if (!pointsMap[key]) {
       pointsMap[key] = 0
     }
 
-    pointsMap[key] += task.points
+    pointsMap[key] += task.points || 0
   })
 
   const weekDays = [
@@ -73,7 +71,7 @@ export async function generateUserReport( user: any, referenceDate?: Date)
 
     currentDate.setDate(startOfWeek.getDate() + i)
 
-    const key = currentDate.toISOString().slice(0, 10)
+    const key = formatKey(currentDate)
 
     const points = pointsMap[key] || 0
 
@@ -106,6 +104,14 @@ export async function generateUserReport( user: any, referenceDate?: Date)
   await workbook.xlsx.writeFile(filePath)
 
   return filePath
+}
+
+function formatKey(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
+
+  return `${year}-${month}-${day}`
 }
 
 export async function generateMonthlyReport(
@@ -152,27 +158,25 @@ export async function generateMonthlyReport(
 
   const tasks = await Task.find({
     userId: user._id,
-
-    date: {
+    status: "done",
+    completedAt: {
+      $exists: true,
       $gte: startOfMonth,
       $lt: endOfMonth
-    },
-
-    status: "done"
+    }
   })
 
   const pointsMap: Record<string, number> = {}
 
   tasks.forEach(task => {
-    const date = new Date(task.date)
-
-    const key = date.toISOString().slice(0, 10)
+    const date = new Date(task.completedAt!)
+    const key = formatKey(date)
 
     if (!pointsMap[key]) {
       pointsMap[key] = 0
     }
 
-    pointsMap[key] += task.points
+    pointsMap[key] += task.points || 0
   })
 
   const daysInMonth = new Date(year, month + 1, 0).getDate()
@@ -182,9 +186,7 @@ export async function generateMonthlyReport(
   for (let day = 1; day <= daysInMonth; day++) {
     const currentDate = new Date(year, month, day)
 
-    const key = currentDate
-      .toISOString()
-      .slice(0, 10)
+    const key = formatKey(currentDate)
 
     const formattedDate =
       currentDate.toLocaleDateString("pt-BR")
@@ -263,29 +265,25 @@ export async function generateYearlyReport( user: any, referenceDate?: Date)
 
   const tasks = await Task.find({
     userId: user._id,
-
-    date: {
+    status: "done",
+    completedAt: {
+      $exists: true,
       $gte: startOfYear,
       $lt: endOfYear
-    },
-
-    status: "done"
+    }
   })
 
   const pointsMap: Record<string, number> = {}
 
   tasks.forEach(task => {
-    const date = new Date(task.date)
-
-    const key = date
-      .toISOString()
-      .slice(0, 10)
+    const date = new Date(task.completedAt!)
+    const key = formatKey(date)
 
     if (!pointsMap[key]) {
       pointsMap[key] = 0
     }
 
-    pointsMap[key] += task.points
+    pointsMap[key] += task.points || 0
   })
 
   let yearlyTotal = 0
@@ -310,9 +308,7 @@ export async function generateYearlyReport( user: any, referenceDate?: Date)
         day
       )
 
-      const key = currentDate
-        .toISOString()
-        .slice(0, 10)
+      const key = formatKey(currentDate)
 
       const formattedDate =
         currentDate.toLocaleDateString("pt-BR")

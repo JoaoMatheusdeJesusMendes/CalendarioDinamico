@@ -69,22 +69,53 @@ export const getTaskById = async (req: Request, res: Response) => {
 }
 
 export const updateTask = async (req: Request, res: Response) => {
-
   try {
-
     if (!req.user) {
-      return res.status(401).json({ message: "Não autenticado" })
+      return res.status(401).json({
+        message: "Não autenticado"
+      })
     }
 
     const { id } = req.params
+
+    const existingTask = await Task.findOne({
+      _id: id,
+      userId: req.user.userId
+    })
+
+    if (!existingTask) {
+      return res.status(404).json({
+        message: "Tarefa não encontrada"
+      })
+    }
+
+    const updateData = { ...req.body }
+
+    if (
+      updateData.status === "done" &&
+      existingTask.status !== "done" &&
+      !existingTask.completedAt
+    ) {
+      updateData.completedAt = new Date()
+    }
+
+    if (
+      updateData.status &&
+      updateData.status !== "done"
+    ) {
+      updateData.completedAt = undefined
+    }
 
     const updated = await Task.findOneAndUpdate(
       {
         _id: id,
         userId: req.user.userId
       },
-      req.body,
-      { new: true }
+      updateData,
+      {
+        new: true,
+        runValidators: true
+      }
     )
 
     if (!updated) {
@@ -94,13 +125,11 @@ export const updateTask = async (req: Request, res: Response) => {
     }
 
     res.json(updated)
-
   } catch (error) {
+    console.error("Erro ao atualizar tarefa:", error)
 
     res.status(500).json({
       message: "Erro ao atualizar tarefa"
     })
-
   }
-
 }

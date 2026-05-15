@@ -40,6 +40,11 @@ const TaskSchema = new mongoose.Schema({
     type:String,
     enum:["todo","doing","done"],
     default:"todo"
+  },
+
+  completedAt: {
+  type: Date,
+  default: null
   }
 
 })
