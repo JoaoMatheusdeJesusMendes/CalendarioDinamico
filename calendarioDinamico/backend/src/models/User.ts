@@ -43,6 +43,20 @@ resetToken: {
 resetTokenExpires: {
   type: Date,
   default: null
+},
+
+highestRank: {
+  type: String,
+  enum: [
+    "Aprendiz",
+    "Iniciante",
+    "Experiente",
+    "Veterano",
+    "Sensei",
+    "Herói",
+    "Estrela"
+  ],
+  default: "Aprendiz"
 }
 
 })

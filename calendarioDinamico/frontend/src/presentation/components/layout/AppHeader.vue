@@ -139,6 +139,10 @@ function goToProfile() {
             Perfil
           </router-link>
 
+          <router-link to="/ranking">
+           Ranking
+          </router-link>
+
           <router-link
             to="/reports"
             @click="showMenu = false"

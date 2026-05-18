@@ -211,3 +211,26 @@ export async function getPerformance(
     })
   }
 }
+
+export const getUserById = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const user = await User.findById(req.params.id).select(
+      "name bio profileImage highestRank"
+    )
+
+    if (!user) {
+      return res.status(404).json({
+        message: "Usuário não encontrado"
+      })
+    }
+
+    res.json(user)
+  } catch (error) {
+    res.status(500).json({
+      message: "Erro ao buscar usuário"
+    })
+  }
+}

@@ -99,6 +99,17 @@ const router = createRouter({
       name: "performance",
       component: () => import("@/presentation/pages/PerformancePage.vue"),
       meta: { requiresAuth: true }
+    },
+    {
+      path: "/ranking",
+      name: "ranking",
+      component: () => import("@/presentation/pages/RankingPage.vue")
+    },
+    {
+      path: "/profile/:id",
+      name: "public-profile",
+      component: () =>
+        import("@/presentation/pages/PublicProfilePage.vue")
     }
   ]
 })
