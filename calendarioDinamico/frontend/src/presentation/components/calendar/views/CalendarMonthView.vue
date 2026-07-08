@@ -4,7 +4,6 @@ import { computed, ref } from "vue"
 import { useCalendarStore } from "../../../../stores/calendarStore"
 import { useRouter } from "vue-router"
 import { useRoute } from "vue-router"
-import CalendarViewSwitcher from "@/presentation/components/calendar/CalendarViewSwitcher.vue"
 import { onMounted } from "vue"
 import { getTasks } from "@/domain/services/taskService"
 
@@ -105,7 +104,6 @@ function openDay(date: Date) {
 
 <template>
 
-<CalendarViewSwitcher />
 <div class="month-grid">
 
 <div

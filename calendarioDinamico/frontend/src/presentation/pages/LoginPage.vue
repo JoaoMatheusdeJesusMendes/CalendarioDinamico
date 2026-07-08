@@ -1,15 +1,30 @@
 <script setup lang="ts">
 
-import { ref } from "vue"
-import { useRouter } from "vue-router"
+import { ref, onMounted } from "vue"
+import { useRouter, useRoute } from "vue-router"
 import { login } from "@/domain/services/authService"
 
 const router = useRouter()
+const route = useRoute()
 const email = ref("")
 const password = ref("")
+const oauthError = ref("")
+
+onMounted(() => {
+    if (route.query.error) {
+        oauthError.value = route.query.error as string
+    }
+})
 
 function goToForgotPassword() {
   router.push("/forgot-password")
+}
+
+function loginGoogle(){
+
+    window.location.href =
+    "http://localhost:3000/auth/google"
+
 }
 
 async function submit(){
@@ -21,7 +36,6 @@ async function submit(){
       password: password.value
     })
 
-    // 🔥 garante que veio token
     if (!response.token) {
       throw new Error(response.message || "Erro ao fazer login")
     }
@@ -32,17 +46,11 @@ async function submit(){
 
     router.push(`/month/${today.getFullYear()}/${today.getMonth()+1}`)
 
-  }catch(error:any){
+  }catch (error: any) {
 
-    if (error.message.includes("Verifique seu email")) {
-      alert("Você precisa verificar seu email antes de entrar.")
-    } else if (error.message.includes("Credenciais")) {
-      alert("Email ou senha inválidos")
-    } else {
-      alert("Erro ao fazer login")
-    }
+  alert(error.message)
 
-  }
+}
 
 }
 </script>
@@ -52,7 +60,6 @@ async function submit(){
 <div class="login">
 
 <h2>Entrar</h2>
-
 <input v-model="email" placeholder="Email"/>
 <input v-model="password" type="password" placeholder="Senha"/>
 
@@ -60,7 +67,7 @@ async function submit(){
 Entrar
 </button>
 
-<button>
+<button @click="loginGoogle">
 Entrar com Google
 </button>
 
@@ -68,6 +75,18 @@ Entrar com Google
 Esqueci minha senha
 </button>
 
+<p v-if="oauthError" class="error">
+  {{ oauthError }}
+</p>
+
 </div>
 
 </template>
+
+<style scoped>
+.error{
+  color:red;
+  margin-bottom:15px;
+  font-weight:bold;
+}
+</style>

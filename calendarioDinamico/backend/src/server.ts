@@ -7,6 +7,8 @@ import { startMonthlyReport } from "./service/monthlyReportService"
 import { startYearlyReport  } from "./service/yearlyReportService"
 import rankingRoutes from "./routes/rankingRoutes"
 import userRoutes from "./routes/userRoutes"
+import passport from "passport"
+import "./config/passport"
 
 import { connectDB } from "./config/db"
 
@@ -30,6 +32,7 @@ app.use("/auth", authRoutes)
 app.use("/tasks", taskRoutes)
 app.use("/users", userRoutes)
 app.use("/ranking", rankingRoutes)
+app.use(passport.initialize())
 
 const PORT = process.env.PORT || 3000
 

@@ -10,6 +10,7 @@ import LoginPage from "@/presentation/pages/LoginPage.vue"
 import RegisterPage from "@/presentation/pages/RegisterPage.vue"
 import CreateTaskPage from "@/presentation/pages/CreateTaskPage.vue"
 import EditTaskPage from "@/presentation/pages/EditTaskPage.vue"
+import GoogleSuccessPage from "@/presentation/pages/GoogleSuccessPage.vue"
 
 import { isAuthenticated } from "@/auth/auth"
 
@@ -110,6 +111,11 @@ const router = createRouter({
       name: "public-profile",
       component: () =>
         import("@/presentation/pages/PublicProfilePage.vue")
+    },
+    {
+      path: "/google-success",
+      name: "googleSuccess",
+      component: GoogleSuccessPage
     }
   ]
 })

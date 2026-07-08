@@ -57,7 +57,7 @@ highestRank: {
     "Estrela"
   ],
   default: "Aprendiz"
-}
+},
 
 })
 

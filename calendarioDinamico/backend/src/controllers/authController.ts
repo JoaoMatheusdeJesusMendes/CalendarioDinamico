@@ -133,14 +133,21 @@ export const login = async (req: Request, res: Response) => {
     })
   }
 
-  const storedPassword = user.password
-  if (!storedPassword) {
+  if (!user.password) {
+
+    if (user.googleId) {
+      return res.status(400).json({
+        message: "Esta conta utiliza login com Google."
+      })
+    }
+
     return res.status(400).json({
-      message: "Senha inválida"
+      message: "Esta conta não possui uma senha cadastrada."
     })
+
   }
 
-  const isMatch = await bcrypt.compare(password, storedPassword)
+  const isMatch = await bcrypt.compare(password, user.password)
 
   if (!isMatch) {
     return res.status(400).json({

@@ -3,7 +3,6 @@
 import { ref, computed, onMounted } from "vue"
 import { useRoute } from "vue-router"
 import { useCalendarStore } from "@/stores/calendarStore"
-import CalendarViewSwitcher from "@/presentation/components/calendar/CalendarViewSwitcher.vue"
 import { getTasks } from "@/domain/services/taskService"
 
 const route = useRoute()
@@ -113,8 +112,6 @@ const weekDays = computed(() => {
 </script>
 
 <template>
-
-<CalendarViewSwitcher />
 
 <div class="week-view">
 

@@ -12,6 +12,13 @@ const email = ref("")
 const password = ref("")
 const age = ref()
 
+function loginGoogle(){
+
+    window.location.href =
+    "http://localhost:3000/auth/google"
+
+}
+
 async function submit(){
 
   try{
@@ -52,8 +59,8 @@ async function submit(){
 Cadastrar
 </button>
 
-<button>
-Cadastrar com Google
+<button @click="loginGoogle">
+Entrar com Google
 </button>
 
 </div>

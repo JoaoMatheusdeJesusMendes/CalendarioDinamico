@@ -2,7 +2,6 @@
 
 import { computed, ref, onMounted } from "vue"
 import { useRouter, useRoute } from "vue-router"
-import CalendarViewSwitcher from "@/presentation/components/calendar/CalendarViewSwitcher.vue"
 import { getTasks } from "@/domain/services/taskService"
 
 const router = useRouter()
@@ -70,8 +69,6 @@ function openMonth(monthIndex: number) {
 </script>
 
 <template>
-
-<CalendarViewSwitcher />
 
 <div class="year-view">
 
