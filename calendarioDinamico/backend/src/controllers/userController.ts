@@ -20,7 +20,16 @@ export async function getProfile(req: Request, res: Response) {
     })
   }
 
-  res.json(user)
+  res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      age: user.age ?? null,
+      profileImage: user.profileImage ?? "",
+
+      googleLinked: !!user.googleId,
+      hasPassword: !!user.password
+  })
 }
 
 export async function updateProfile( req: Request, res: Response) 

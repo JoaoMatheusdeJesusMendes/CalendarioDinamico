@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
+
+import LoginMethodsCard from "@/presentation/components/profile/LoginMethodsCard.vue"
+
 import {
   getProfile,
   updateProfile
@@ -13,7 +16,10 @@ const form = ref({
   email: "",
   age: null as number | null,
   profileImage: "",
-  password: ""
+  password: "",
+
+  googleLinked: false,
+  hasPassword: false
 })
 
 const loading = ref(false)
@@ -23,11 +29,14 @@ async function loadProfile() {
     const data = await getProfile()
 
     form.value = {
-      name: data.name || "",
-      email: data.email || "",
-      age: data.age ?? null,
-      profileImage: data.profileImage || "",
-      password: ""
+      name: data.name,
+      email: data.email,
+      age: data.age,
+      profileImage: data.profileImage,
+      password: "",
+
+      googleLinked: data.googleLinked,
+      hasPassword: data.hasPassword
     }
   } catch (error) {
     console.error("Erro ao carregar perfil:", error)
@@ -91,6 +100,22 @@ function cancel() {
   router.push("/profile")
 }
 
+function linkGoogle(){
+
+    window.location.href =
+    "http://localhost:3000/auth/google/link"
+
+}
+
+function focusPassword(){
+
+    const input =
+    document.getElementById("password")
+
+    input?.focus()
+
+}
+
 onMounted(loadProfile)
 </script>
 
@@ -128,9 +153,27 @@ onMounted(loadProfile)
     />
 
     <input
+
+      id="password"
+
       v-model="form.password"
+
       type="password"
+
       placeholder="Nova senha (opcional)"
+
+    />
+
+    <LoginMethodsCard
+
+    :googleLinked="form.googleLinked"
+
+    :hasPassword="form.hasPassword"
+
+    @link-google="linkGoogle"
+
+    @add-password="focusPassword"
+
     />
 
     <div class="actions">

@@ -1,7 +1,13 @@
 export interface User {
-  _id: string
-  name: string
-  email: string
-  age?: number | null
-  profileImage?: string
+    _id: string
+
+    name: string
+    email: string
+
+    age: number | null
+
+    profileImage: string
+
+    googleLinked: boolean
+    hasPassword: boolean
 }

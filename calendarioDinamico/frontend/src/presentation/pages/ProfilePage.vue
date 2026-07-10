@@ -11,7 +11,10 @@ const profile = ref<User>({
   name: "",
   email: "",
   age: null,
-  profileImage: ""
+  profileImage: "",
+
+  googleLinked: false,
+  hasPassword: false
 })
 
 async function loadProfile() {
@@ -19,11 +22,14 @@ async function loadProfile() {
     const data = await getProfile()
 
     profile.value = {
-    _id: data._id,
-    name: data.name,
-    email: data.email,
-    age: data.age,
-    profileImage: data.profileImage || ""
+      _id: data._id,
+      name: data.name,
+      email: data.email,
+      age: data.age,
+      profileImage: data.profileImage || "",
+
+      googleLinked: data.googleLinked,
+      hasPassword: data.hasPassword
     }
   } catch (error) {
     console.error("Erro ao carregar perfil:", error)
