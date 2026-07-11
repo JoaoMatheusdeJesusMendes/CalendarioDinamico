@@ -9,27 +9,31 @@ import { sendReportEmail } from "../service/emailService"
 
 import { getPerformanceData } from "../service/performanceService"
 
-export async function getProfile(req: Request, res: Response) {
+export const getProfile = async (req: Request, res: Response) => {
+
   const userId = req.user?.userId
 
-  const user = await User.findById(userId).select("-password")
+  if (!userId) {
+    return res.status(401).json({ message: "Usuário não autenticado" })
+  }
+
+  const user = await User.findById(userId)
 
   if (!user) {
-    return res.status(404).json({
-      message: "Usuário não encontrado"
-    })
+    return res.status(404).json({ message: "Usuário não encontrado" })
   }
 
   res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      age: user.age ?? null,
-      profileImage: user.profileImage ?? "",
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    age: user.age,
+    profileImage: user.profileImage,
 
-      googleLinked: !!user.googleId,
-      hasPassword: !!user.password
+    googleLinked: !!user.googleId,
+    hasPassword: !!user.password
   })
+
 }
 
 export async function updateProfile( req: Request, res: Response) 

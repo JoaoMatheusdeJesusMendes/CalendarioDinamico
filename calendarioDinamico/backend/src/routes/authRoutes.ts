@@ -1,5 +1,6 @@
 import { Router } from "express"
 import { forgotPassword, login, register, resetPassword } from "../controllers/authController"
+import { authMiddleware } from "../middleware/authMiddleware"
 import { verifyEmail } from "../controllers/authController"
 import passport from "passport"
 import jwt from "jsonwebtoken"
@@ -19,8 +20,58 @@ router.get(
 )
 
 router.get(
+  "/google/link",
+  authMiddleware,
+  (req, res, next) => {
+
+    const state = jwt.sign(
+      {
+        userId: req.user!.userId,
+        action: "link"
+      },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: "10m"
+      }
+    )
+
+    passport.authenticate("google", {
+      scope: ["profile", "email"],
+      state
+    })(req, res, next)
+
+  }
+)
+
+router.get(
+  "/google/link",
+  authMiddleware,
+  (req, res, next) => {
+
+    const state = jwt.sign(
+      {
+        userId: req.user!.userId,
+        action: "link"
+      },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: "10m"
+      }
+    )
+
+    passport.authenticate("google", {
+      scope: ["profile", "email"],
+      state
+    })(req, res, next)
+
+  }
+)
+
+router.get(
   "/google/callback",
   (req, res, next) => {
+
+    console.log(req.cookies)
 
     passport.authenticate(
       "google",

@@ -9,6 +9,7 @@ import rankingRoutes from "./routes/rankingRoutes"
 import userRoutes from "./routes/userRoutes"
 import passport from "passport"
 import "./config/passport"
+import cookieParser from "cookie-parser"
 
 import { connectDB } from "./config/db"
 
@@ -21,6 +22,7 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use(cookieParser())
 
 connectDB()
 startDailyReminder()
